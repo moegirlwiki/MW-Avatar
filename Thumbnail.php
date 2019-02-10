@@ -8,19 +8,19 @@ class Thumbnail {
 	public $height;
 	public $type;
 
-	private function __construct($url) {
-		$imageInfo = getimagesize($url);
+	private function __construct($dataUrl) {
+        list($type, $data) = explode(';', $dataUrl);
+        list(, $data) = explode(',', $data);
+        $data = base64_decode($data);
+
+        $imageInfo = getimagesizefromstring($data);
 		list($this->width, $this->height, $this->type) = $imageInfo;
 
 		switch ($this->type) {
 		case IMAGETYPE_GIF:
-			$this->image = imagecreatefromgif($url);
-			break;
 		case IMAGETYPE_PNG:
-			$this->image = imagecreatefrompng($url);
-			break;
 		case IMAGETYPE_JPEG:
-			$this->image = imagecreatefromjpeg($url);
+			$this->image = imagecreatefromstring($data);
 			break;
 		}
 	}
